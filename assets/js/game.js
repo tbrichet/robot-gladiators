@@ -115,16 +115,27 @@ var fightOrSkip = function() {
 
 var fight = function(enemy) {
 
+        //keep track of who goes first
+        var isPlayerTurn = true;
+
+        //randomly change turn order
+            if (Math.random() > 0.5) {
+                isPlayerTurn = false;
+            }
+
         //repeat and execute as long as the enemy robot is alive
         while(enemy.health > 0 && playerInfo.health > 0) {
-            //ask user if they'd like to fight or skip
-            if (fightOrSkip()) { // <-- Replace code with this function call
-                //if true, leave fight by breaking loop
-                break;
-            }
+            if (isPlayerTurn) {
+                //ask user if they'd like to fight or skip
+                if (fightOrSkip()) { // <-- Replace code with this function call
+                    //if true, leave fight by breaking loop
+                    break;
+                }
         
             //generate random damage value based on player's attack power
             var damage = randomNumber(playerInfo.attack -3, playerInfo.attack);
+
+            //remove enemy's health
             enemy.health = Math.max(0, enemy.health - damage);
             console.log (
                 playerInfo.name + " attacked " + enemy.name + ". " + enemy.name + " now has " + enemy.health + " health remaining."
@@ -143,9 +154,14 @@ var fight = function(enemy) {
             } else {
                 window.alert(enemy.name + " still has " + enemy.health + " health left.");
             }
+            //player gets attacked first
+
+        } else {
    
             //generate random damage value based on enemy's attack power
             var damage = randomNumber(enemy.attack - 3, enemy.attack);
+
+            //remove enemy's health
             playerInfo.health = Math.max(0, playerInfo.health - damage);
             console.log(
                 enemy.name + " attacked " + playerInfo.name + ". " + playerInfo.name + " now has " + playerInfo.health + " health remaining."
@@ -156,10 +172,12 @@ var fight = function(enemy) {
                  window.alert(playerInfo.name + " has died!");
                  //leave while() loop if player is dead
                  break;
-            }
-            else {
+            } else {
                 window.alert(playerInfo.name + " still has " + playerInfo.health + " health left.");
             }
+        }
+        //switch turn order for next round
+        isPlayerTurn = !isPlayerTurn;
     }
 };
 
@@ -227,7 +245,7 @@ var shop = function() {
     var shopOptionPrompt = window.prompt(
         "Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter '1' to refill your health, '2' to upgrade your attack, or '3' to leave."
     );
-    
+
     shopOptionPrompt = parseInt(shopOptionPrompt);
 
     //use switch to carry out action
